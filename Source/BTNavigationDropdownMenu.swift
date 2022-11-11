@@ -138,6 +138,15 @@ open class BTNavigationDropdownMenu: UIView {
             self.configuration.cellSelectionColor = value
         }
     }
+    
+    open var iconImage: UIImage! {
+        get {
+            return self.configuration.iconImage
+        }
+        set(value) {
+            self.configuration.iconImage = value
+        }
+    }
 
     // The checkmark icon of the cell
     open var checkMarkImage: UIImage! {
@@ -229,9 +238,11 @@ open class BTNavigationDropdownMenu: UIView {
     fileprivate var menuButton: UIButton!
     fileprivate var menuTitle: UILabel!
     fileprivate var menuArrow: UIImageView!
+    fileprivate var menuImage: UIImageView!
     fileprivate var backgroundView: UIView!
     fileprivate var tableView: BTTableView!
     fileprivate var items: [String]!
+    fileprivate var itemImages: [UIImage]?
     fileprivate var menuWrapper: UIView!
 
     required public init?(coder aDecoder: NSCoder) {
@@ -248,9 +259,9 @@ open class BTNavigationDropdownMenu: UIView {
         - title: A string to define title to be displayed.
         - items: The array of items to select
      */
-    public convenience init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: String, items: [String]) {
+    public convenience init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: String, items: [String], itemImages: [UIImage]? = nil) {
 
-        self.init(navigationController: navigationController, containerView: containerView, title: BTTitle.title(title), items: items)
+        self.init(navigationController: navigationController, containerView: containerView, title: BTTitle.title(title), items: items, itemImages: itemImages)
     }
 
     /**
@@ -265,7 +276,7 @@ open class BTNavigationDropdownMenu: UIView {
         - title: An enum to define title to be displayed, can be a string or index of items.
         - items: The array of items to select
      */
-    public init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: BTTitle, items: [String]) {
+    public init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: BTTitle, items: [String], itemImages: [UIImage]? = nil) {
         // Key window
         guard let window = UIApplication.shared.keyWindow else {
             super.init(frame: CGRect.zero)
@@ -303,6 +314,7 @@ open class BTNavigationDropdownMenu: UIView {
 
         self.isShown = false
         self.items = items
+        self.itemImages = itemImages
 
         // Init button as navigation title
         self.menuButton = UIButton(frame: frame)
@@ -318,6 +330,11 @@ open class BTNavigationDropdownMenu: UIView {
 
         self.menuArrow = UIImageView(image: self.configuration.arrowImage.withRenderingMode(.alwaysTemplate))
         self.menuButton.addSubview(self.menuArrow)
+        
+        self.menuImage = UIImageView(image: nil)
+        if (self.itemImages != nil) {
+            self.menuButton.addSubview(self.menuImage)
+        }
 
         let menuWrapperBounds = window.bounds
 
@@ -382,6 +399,8 @@ open class BTNavigationDropdownMenu: UIView {
         self.menuTitle.center = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.menuTitle.textColor = self.configuration.menuTitleColor
         self.menuArrow.sizeToFit()
+        self.menuImage.sizeToFit()
+        self.menuImage.center = CGPoint(x: self.menuTitle.frame.minX - ((self.menuImage.image?.size.width ?? 0) / 2), y: self.frame.size.height/2)
         self.menuArrow.center = CGPoint(x: self.menuTitle.frame.maxX + self.configuration.arrowPadding, y: self.frame.size.height/2)
         self.menuWrapper.frame.origin.y = self.navigationController!.navigationBar.frame.maxY
         self.tableView.reloadData()
