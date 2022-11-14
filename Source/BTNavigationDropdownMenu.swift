@@ -432,6 +432,10 @@ open class BTNavigationDropdownMenu: UIView {
             self.tableView.reloadData()
         }
     }
+    
+    open func updateItemImages(_ images: [UIImage]?) {
+        self.tableView.itemImages = images
+    }
 
     open func setSelected(index: Int) {
         self.tableView.selectedIndexPath = index
