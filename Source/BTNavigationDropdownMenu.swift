@@ -228,6 +228,15 @@ open class BTNavigationDropdownMenu: UIView {
             self.configuration.shouldChangeTitleText = value
         }
     }
+    
+    open var shouldChangeTitleImage: Bool! {
+        get {
+            return self.configuration.shouldChangeTitleImage
+        }
+        set(value) {
+            self.configuration.shouldChangeTitleImage = value
+        }
+    }
 
     open var didSelectItemAtIndexHandler: ((_ indexPath: Int) -> ())?
     open var isShown: Bool!
@@ -369,6 +378,9 @@ open class BTNavigationDropdownMenu: UIView {
             if selfie.shouldChangeTitleText! {
                 selfie.setMenuTitle("\(selfie.tableView.items[indexPath])")
             }
+            if selfie.shouldChangeTitleImage!, let itemImages =  selfie.tableView.itemImages {
+                selfie.setMenuImage(itemImages[indexPath])
+            }
             self?.hideMenu()
             self?.layoutSubviews()
         }
@@ -443,6 +455,9 @@ open class BTNavigationDropdownMenu: UIView {
 
         if self.shouldChangeTitleText! {
             self.setMenuTitle("\(self.tableView.items[index])")
+        }
+        if self.shouldChangeTitleImage!, let itemImages =  self.tableView.itemImages {
+            self.setMenuImage(itemImages[index])
         }
     }
 
@@ -542,6 +557,10 @@ open class BTNavigationDropdownMenu: UIView {
     
     func setMenuTitle(_ title: String) {
         self.menuTitle.text = title
+    }
+    
+    func setMenuImage(_ image: UIImage) {
+        self.menuImage.image = image
     }
     
     @objc func menuButtonTapped(_ sender: UIButton) {
